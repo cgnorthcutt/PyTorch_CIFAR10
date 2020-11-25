@@ -39,7 +39,8 @@ def main(hparams):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--classifier', type=str, default='resnet18')
-    parser.add_argument('--data_dir', type=str, default='/data/huy/cifar10/')
+    parser.add_argument('--data_dir', type=str, default='/datasets/datasets/cifar10/cifar10/')
+    parser.add_argument('--pretrained_weights_dir', type=str, default='/datasets/datasets/cifar10/pretrained_models/state_dicts/')
     parser.add_argument('--gpus', default='0,') # use None to train on CPU
     parser.add_argument('--batch_size', type=int, default=256)
     parser.add_argument('--max_epochs', type=int, default=100)
