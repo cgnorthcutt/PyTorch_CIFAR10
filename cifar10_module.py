@@ -5,33 +5,33 @@ from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
 from cifar10_models import *
 
-def get_classifier(classifier, pretrained):
+def get_classifier(classifier, pretrained, weights_dir):
     if classifier == 'vgg11_bn':
-        return vgg11_bn(pretrained=pretrained)
+        return vgg11_bn(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'vgg13_bn':
-        return vgg13_bn(pretrained=pretrained)
+        return vgg13_bn(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'vgg16_bn':
-        return vgg16_bn(pretrained=pretrained)
+        return vgg16_bn(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'vgg19_bn':
-        return vgg19_bn(pretrained=pretrained)
+        return vgg19_bn(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'resnet18':
-        return resnet18(pretrained=pretrained)
+        return resnet18(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'resnet34':
-        return resnet34(pretrained=pretrained)
+        return resnet34(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'resnet50':
-        return resnet50(pretrained=pretrained)
+        return resnet50(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'densenet121':
-        return densenet121(pretrained=pretrained)
+        return densenet121(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'densenet161':
-        return densenet161(pretrained=pretrained)
+        return densenet161(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'densenet169':
-        return densenet169(pretrained=pretrained)
+        return densenet169(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'mobilenet_v2':
-        return mobilenet_v2(pretrained=pretrained)
+        return mobilenet_v2(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'googlenet':
-        return googlenet(pretrained=pretrained)
+        return googlenet(pretrained=pretrained, weights_dir=weights_dir)
     elif classifier == 'inception_v3':
-        return inception_v3(pretrained=pretrained)
+        return inception_v3(pretrained=pretrained, weights_dir=weights_dir)
     else:
         raise NameError('Please enter a valid classifier')
         
@@ -42,7 +42,8 @@ class CIFAR10_Module(pl.LightningModule):
         self.criterion = torch.nn.CrossEntropyLoss()
         self.mean = [0.4914, 0.4822, 0.4465]
         self.std = [0.2023, 0.1994, 0.2010]
-        self.model = get_classifier(hparams.classifier, pretrained)
+        self.model = get_classifier(hparams.classifier, pretrained,
+                                    hparams.pretrained_weights_dir)
         self.train_size = len(self.train_dataloader().dataset)
         self.val_size = len(self.val_dataloader().dataset)
         
@@ -94,14 +95,15 @@ class CIFAR10_Module(pl.LightningModule):
                                               transforms.RandomHorizontalFlip(),
                                               transforms.ToTensor(),
                                               transforms.Normalize(self.mean, self.std)])
-        dataset = CIFAR10(root=self.hparams.data_dir, train=True, transform=transform_train)
+        print(self.hparams.data_dir)
+        dataset = CIFAR10(root=self.hparams.data_dir, train=True, transform=transform_train, download=True)
         dataloader = DataLoader(dataset, batch_size=self.hparams.batch_size, num_workers=4, shuffle=True, drop_last=True, pin_memory=True)
         return dataloader
     
     def val_dataloader(self):
         transform_val = transforms.Compose([transforms.ToTensor(),
                                             transforms.Normalize(self.mean, self.std)])
-        dataset = CIFAR10(root=self.hparams.data_dir, train=False, transform=transform_val)
+        dataset = CIFAR10(root=self.hparams.data_dir, train=False, transform=transform_val, download=True)
         dataloader = DataLoader(dataset, batch_size=self.hparams.batch_size, num_workers=4, pin_memory=True)
         return dataloader
     
