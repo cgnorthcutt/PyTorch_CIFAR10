@@ -10,7 +10,7 @@ __all__ = ['Inception3', 'inception_v3']
 _InceptionOuputs = namedtuple('InceptionOuputs', ['logits', 'aux_logits'])
 
 
-def inception_v3(pretrained=False, progress=True, device='cpu', **kwargs):
+def inception_v3(pretrained=False, progress=True, device='cpu', weights_dir=None, **kwargs):
     r"""Inception v3 model architecture from
     `"Rethinking the Inception Architecture for Computer Vision" <http://arxiv.org/abs/1512.00567>`_.
 
@@ -28,8 +28,7 @@ def inception_v3(pretrained=False, progress=True, device='cpu', **kwargs):
     """
     model = Inception3()
     if pretrained:
-        script_dir = os.path.dirname(__file__)
-        state_dict = torch.load(script_dir + '/state_dicts/inception_v3.pt', map_location=device)
+        state_dict = torch.load(weights_dir + '/state_dicts/inception_v3.pt', map_location=device)
         model.load_state_dict(state_dict)
     return model
 
